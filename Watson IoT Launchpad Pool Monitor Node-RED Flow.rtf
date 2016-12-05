@@ -1,0 +1,246 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1504\cocoasubrtf600
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;\csgray\c100000;}
+\margl1440\margr1440\vieww10800\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 [\
+    \{\
+        "id": "f465837a.853af",\
+        "type": "tab",\
+        "label": "Flow 1"\
+    \},\
+    \{\
+        "id": "3e77d543.c1882a",\
+        "type": "ibmiot in",\
+        "z": "f465837a.853af",\
+        "authentication": "boundService",\
+        "apiKey": "",\
+        "inputType": "evt",\
+        "deviceId": "209148838dcc",\
+        "applicationId": "",\
+        "deviceType": "+",\
+        "eventType": "+",\
+        "commandType": "",\
+        "format": "json",\
+        "name": "IBM IoT App In",\
+        "service": "registered",\
+        "allDevices": false,\
+        "allApplications": false,\
+        "allDeviceTypes": true,\
+        "allEvents": true,\
+        "allCommands": false,\
+        "allFormats": false,\
+        "x": 100,\
+        "y": 400,\
+        "wires": [\
+            [\
+                "ae0082ac.51ff8",\
+                "c0c482df.3f3b8"\
+            ]\
+        ]\
+    \},\
+    \{\
+        "id": "ae0082ac.51ff8",\
+        "type": "function",\
+        "z": "f465837a.853af",\
+        "name": "acc magnitude",\
+        "func": "var AccX, AccY, AccZ, magAcc;\\nAccX = msg.payload.d.AccX;\\nAccY = msg.payload.d.AccY;\\nAccZ = msg.payload.d.AccZ;\\nmagAcc = Math.sqrt(AccX*AccX+AccY*AccY+AccZ*AccZ);\\n\\nmagAcc = magAcc.toFixed(2);\\nflow.set('magAcc',magAcc);\\n\\nreturn [\{payload:msg.payload.d.temp\},\{magAcc:magAcc\},\{payload:\{\\"d\\":\{\\"magAcc\\":magAcc\}\}\}];",\
+        "outputs": "3",\
+        "noerr": 0,\
+        "x": 320,\
+        "y": 400,\
+        "wires": [\
+            [],\
+            [\
+                "a595e69a.d82428"\
+            ],\
+            [\
+                "44280acc.179034"\
+            ]\
+        ]\
+    \},\
+    \{\
+        "id": "c0c482df.3f3b8",\
+        "type": "debug",\
+        "z": "f465837a.853af",\
+        "name": "device data",\
+        "active": false,\
+        "console": "false",\
+        "complete": "true",\
+        "x": 324,\
+        "y": 557,\
+        "wires": []\
+    \},\
+    \{\
+        "id": "a595e69a.d82428",\
+        "type": "switch",\
+        "z": "f465837a.853af",\
+        "name": "acc thresh",\
+        "property": "magAcc",\
+        "propertyType": "msg",\
+        "rules": [\
+            \{\
+                "t": "lte",\
+                "v": "0.3",\
+                "vt": "str"\
+            \},\
+            \{\
+                "t": "gt",\
+                "v": "0.3",\
+                "vt": "str"\
+            \}\
+        ],\
+        "checkall": "true",\
+        "outputs": 2,\
+        "x": 515,\
+        "y": 400,\
+        "wires": [\
+            [],\
+            [\
+                "efbab547.c9a238"\
+            ]\
+        ]\
+    \},\
+    \{\
+        "id": "b49cd5ee.3b1318",\
+        "type": "template",\
+        "z": "f465837a.853af",\
+        "name": "alert message",\
+        "field": "",\
+        "fieldType": "msg",\
+        "syntax": "mustache",\
+        "template": "Motion detected in your pool!\\nAcceleration: \{\{magAcc\}\} g\\nWind Speed: \{\{windspeed\}\} mph\\nGusts: \{\{gust\}\} mph",\
+        "x": 869.3636207580566,\
+        "y": 510.18180656433105,\
+        "wires": [\
+            [\
+                "89742a05.9968e8",\
+                "92dabf5.118944"\
+            ]\
+        ]\
+    \},\
+    \{\
+        "id": "44280acc.179034",\
+        "type": "ibmiot out",\
+        "z": "f465837a.853af",\
+        "authentication": "boundService",\
+        "apiKey": "",\
+        "outputType": "evt",\
+        "deviceId": "wiotp",\
+        "deviceType": "WIOTPCalc",\
+        "eventCommandType": "status",\
+        "format": "json",\
+        "data": "0",\
+        "qos": 0,\
+        "name": "IBM IoT",\
+        "service": "registered",\
+        "x": 528,\
+        "y": 452,\
+        "wires": []\
+    \},\
+    \{\
+        "id": "89742a05.9968e8",\
+        "type": "debug",\
+        "z": "f465837a.853af",\
+        "name": "status",\
+        "active": true,\
+        "complete": "payload",\
+        "x": 1055,\
+        "y": 512,\
+        "wires": []\
+    \},\
+    \{\
+        "id": "44619236.5e874c",\
+        "type": "weather_insights",\
+        "z": "f465837a.853af",\
+        "name": "Weather",\
+        "service": "/observations.json",\
+        "geocode": "43.62,-116.21",\
+        "units": "e",\
+        "language": "en",\
+        "x": 853,\
+        "y": 407,\
+        "wires": [\
+            [\
+                "bc0ec498.7f6798",\
+                "22f4e68b.c4fa7a",\
+                "e0b09200.43815"\
+            ]\
+        ]\
+    \},\
+    \{\
+        "id": "e0b09200.43815",\
+        "type": "function",\
+        "z": "f465837a.853af",\
+        "name": "acc magnitude",\
+        "func": "var magAcc = flow.get('magAcc');\\n\\nreturn \{magAcc:magAcc,windspeed:msg.observation.wspd,gust:msg.observation.gust,topic:'Pool Alert!'\};",\
+        "outputs": "1",\
+        "noerr": 0,\
+        "x": 870,\
+        "y": 460,\
+        "wires": [\
+            [\
+                "b49cd5ee.3b1318"\
+            ]\
+        ]\
+    \},\
+    \{\
+        "id": "bc0ec498.7f6798",\
+        "type": "debug",\
+        "z": "f465837a.853af",\
+        "name": "weather",\
+        "active": false,\
+        "complete": "true",\
+        "x": 1064,\
+        "y": 407,\
+        "wires": []\
+    \},\
+    \{\
+        "id": "22f4e68b.c4fa7a",\
+        "type": "debug",\
+        "z": "f465837a.853af",\
+        "name": "gust",\
+        "active": false,\
+        "complete": "observation.gust",\
+        "x": 1053,\
+        "y": 370,\
+        "wires": []\
+    \},\
+    \{\
+        "id": "92dabf5.118944",\
+        "type": "e-mail",\
+        "z": "f465837a.853af",\
+        "server": "smtp.gmail.com",\
+        "port": "465",\
+        "name": "",\
+        "dname": "",\
+        "x": 1056,\
+        "y": 563,\
+        "wires": []\
+    \},\
+    \{\
+        "id": "efbab547.c9a238",\
+        "type": "delay",\
+        "z": "f465837a.853af",\
+        "name": "1 msg/min",\
+        "pauseType": "rate",\
+        "timeout": "5",\
+        "timeoutUnits": "seconds",\
+        "rate": "1",\
+        "nbRateUnits": "1",\
+        "rateUnits": "minute",\
+        "randomFirst": "1",\
+        "randomLast": "5",\
+        "randomUnits": "seconds",\
+        "drop": true,\
+        "x": 681,\
+        "y": 407,\
+        "wires": [\
+            [\
+                "44619236.5e874c"\
+            ]\
+        ]\
+    \}\
+]}
